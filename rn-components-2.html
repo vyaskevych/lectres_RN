@@ -541,6 +541,17 @@
                     </ul>
                 </div>
 
+                <h3>Ключові властивості</h3>
+                <ul>
+                    <li><code>onPress</code> — функція при натисканні</li>
+                    <li><code>style</code> — динамічні стилі на основі стану</li>
+                    <li><code>children</code> — динамічний контент на основі стану</li>
+                    <li><code>Об'єкт стану (PressableStateCallbackType)</code> — Функції style та children отримують об'єкт зі станом
+                    <pre class="editor"><code>{
+  pressed: boolean  // Чи натиснутий зараз
+}</code></pre></li>
+                </ul>
+
                 <h3>Приклад</h3>
                 <pre class="editor"><code>&lt;Pressable 
   style={({ pressed }) => [
@@ -656,6 +667,7 @@
                 <ul>
                     <li><code>horizontal</code> — горизонтальна прокрутка</li>
                     <li><code>contentContainerStyle</code> — стилі внутрішнього контенту</li>
+                    <li><code>style</code> — стилі зовнішнього контейнера ScrollView</li>
                     <li><code>pagingEnabled</code> — прокрутка сторінками</li>
                     <li><code>scrollEnabled</code> — дозволити/заборонити прокрутку</li>
                 </ul>
