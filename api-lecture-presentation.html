@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Робота з API в React Native</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border: #475569;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .presentation-container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 2px solid var(--accent);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .slide-counter {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Slides */
+        .slides-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 3rem;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        .slide.prev {
+            transform: translateX(-100%);
+        }
+
+        /* Navigation */
+        .navigation {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .nav-btn:disabled {
+            background: var(--bg-tertiary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Slide indicators */
+        .slide-indicators {
+            position: absolute;
+            bottom: 6rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .indicator.active {
+            background: var(--accent);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* Content styles */
+        h2 {
+            color: var(--accent);
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        h3 {
+            color: var(--success);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        h4 {
+            color: var(--warning);
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        p, li {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        code {
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--success);
+            font-size: 0.95em;
+        }
+
+        pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: var(--text-primary);
+        }
+
+        .highlight-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .snack-embed {
+            margin: 2rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--accent);
+            height: 600px;
+        }
+
+        /* Keyboard shortcuts hint */
+        .shortcuts {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        blockquote {
+            border-left: 4px solid var(--warning);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 2rem 1rem;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            h3 {
+                font-size: 1.4rem;
+            }
+
+            .navigation {
+                bottom: 1rem;
+            }
+
+            .slide-indicators {
+                bottom: 5rem;
+            }
+
+            .nav-btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .shortcuts {
+                display: none;
+            }
+
+            .snack-embed {
+                height: 400px;
+            }
+        }
+
+        /* Code syntax highlighting */
+        .keyword { color: #ff79c6; }
+        .string { color: #50fa7b; }
+        .function { color: #8be9fd; }
+        .comment { color: #6272a4; }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="header">
+            <h1>📚 Робота з API в React Native</h1>
+            <div class="slide-counter">
+                <span id="currentSlide">1</span> / <span id="totalSlides">13</span>
+            </div>
+        </div>
+
+        <div class="shortcuts">
+            ← → для навігації | ESC - перший слайд
+        </div>
+
+        <div class="slides-wrapper">
+            <!-- Slide 1: Title -->
+            <div class="slide active" data-slide="1">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80%; text-align: center;">
+                    <h2 style="font-size: 4rem; margin-bottom: 2rem; border: none;">🌐 Робота з API</h2>
+                    <h3 style="font-size: 2.5rem; color: var(--text-secondary); margin: 0;">в React Native</h3>
+                    <p style="margin-top: 3rem; font-size: 1.3rem;">Повний гід від основ до Best Practices</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: Що таке API -->
+            <div class="slide" data-slide="2">
+                <h2>🌐 Що таке API?</h2>
+                
+                <div class="highlight-box">
+                    <strong>API (Application Programming Interface)</strong> — це міст між вашим мобільним додатком (клієнтом) та сервером (бекендом).
+                </div>
+
+                <h3>Аналогія з рестораном:</h3>
+                <ul>
+                    <li><strong>Ви (Клієнт/React Native App):</strong> Хочете їсти, але не можете зайти на кухню і готувати самі.</li>
+                    <li><strong>Кухня (Сервер/База даних):</strong> Там є продукти та інструменти для приготування страв (даних).</li>
+                    <li><strong>Офіціант (API):</strong> Ви даєте йому замовлення (Запит), він несе його на кухню, кухня готує, офіціант приносить вам страву (Відповідь).</li>
+                </ul>
+
+                <p style="margin-top: 2rem; font-size: 1.2rem;">Без API ваш додаток був би ізольованим і не міг би показувати актуальні новини, погоду чи спілкуватися з іншими користувачами.</p>
+            </div>
+
+            <!-- Slide 3: REST API -->
+            <div class="slide" data-slide="3">
+                <h2>🔄 REST API та JSON</h2>
+                
+                <h3>REST (Representational State Transfer)</h3>
+                <p><strong>REST</strong> — це набір правил, як клієнт і сервер мають спілкуватися.</p>
+                
+                <ul>
+                    <li><strong>Ресурс:</strong> В REST все є "ресурсом" (користувач, пост, товар). Кожен ресурс має свою унікальну адресу (URL).</li>
+                    <li><strong>Stateless:</strong> Кожен запит має містити всю необхідну інформацію. Сервер не "пам'ятає", що ви питали 5 секунд тому.</li>
+                </ul>
+
+                <h3>JSON (JavaScript Object Notation)</h3>
+                <p><strong>JSON</strong> — це мова, якою спілкуються клієнт і сервер.</p>
+                <ul>
+                    <li>Текстовий формат</li>
+                    <li>Ідеальний для React Native - синтаксично майже ідентичний JS об'єктам</li>
+                    <li>Не потрібні складні парсери, як для XML</li>
+                </ul>
+            </div>
+
+            <!-- Slide 4: HTTP Methods -->
+            <div class="slide" data-slide="4">
+                <h2>📡 HTTP методи</h2>
+                
+                <p style="font-size: 1.2rem;">Коли ми звертаємося до сервера, ми маємо сказати <strong>дієслово</strong> — що ми хочемо зробити з ресурсом.</p>
+
+                <h3>Основні методи:</h3>
+                <ol>
+                    <li><strong>GET (Отримати):</strong> "Дай мені список новин". Безпечний метод, нічого не змінює.</li>
+                    <li><strong>POST (Створити):</strong> "Створи нового користувача". Відправляємо дані в тілі запиту.</li>
+                    <li><strong>PUT / PATCH (Оновити):</strong>
+                        <ul>
+                            <li><strong>PUT:</strong> Повна заміна</li>
+                            <li><strong>PATCH:</strong> Часткове оновлення</li>
+                        </ul>
+                    </li>
+                    <li><strong>DELETE (Видалити):</strong> "Видали коментар №5".</li>
+                </ol>
+
+                <h3>Структура HTTP-запиту:</h3>
+                <pre><code>URL: https://api.example.com/users
+Headers: { 'Content-Type': 'application/json' }
+Body: { "name": "John" }</code></pre>
+            </div>
+
+            <!-- Slide 5: fetch Basics -->
+            <div class="slide" data-slide="5">
+                <h2>🚀 fetch в React Native</h2>
+                
+                <div class="highlight-box">
+                    <strong>fetch</strong> — вбудований метод для HTTP-запитів. Працює так само, як у браузері.
+                </div>
+
+                <h3>Базовий синтаксис:</h3>
+                <pre><code>fetch(url, options)
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error(error));</code></pre>
+
+                <h3>Використовується для:</h3>
+                <ul>
+                    <li>Завантаження даних із серверів</li>
+                    <li>Відправлення даних на сервер</li>
+                    <li>Роботи з JSON-API</li>
+                    <li>Взаємодії з backend</li>
+                </ul>
+
+                <div class="warning-box">
+                    <strong>⚠️ Важливо:</strong> fetch повертає Promise. Код після fetch виконається раніше, ніж прийдуть дані!
+                </div>
+            </div>
+
+            <!-- Slide 6: fetch Examples -->
+            <div class="slide" data-slide="6">
+                <h2>📝 Приклади fetch</h2>
+                
+                <h3>GET-запит:</h3>
+                <pre><code>fetch('https://api.example.com/posts')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network error');
+    }
+    return response.json();
+  })
+  .then(data => console.log(data))
+  .catch(error => console.error(error));</code></pre>
+
+                <h3>POST-запит:</h3>
+                <pre><code>fetch('https://api.example.com/posts', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    title: 'Новий пост',
+    body: 'Текст поста'
+  })
+})
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+            </div>
+
+            <!-- Slide 7: useState + useEffect -->
+            <div class="slide" data-slide="7">
+                <h2>⚛️ useState + useEffect</h2>
+                
+                <h3>Три стани для роботи з мережею:</h3>
+                <ol>
+                    <li><strong>Data:</strong> Те, що прийшло з сервера</li>
+                    <li><strong>Loading:</strong> Чи чекаємо ми на відповідь?</li>
+                    <li><strong>Error:</strong> Чи сталося щось погане?</li>
+                </ol>
+
+                <pre><code>const [data, setData] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+useEffect(() => {
+  fetch('https://api.example.com/data')
+    .then(res => res.json())
+    .then(data => setData(data))
+    .catch(err => setError(err.message))
+    .finally(() => setLoading(false));
+}, []); // Порожній масив = запит один раз</code></pre>
+
+                <div class="warning-box">
+                    <strong>⚠️ Увага:</strong> useEffect без масиву залежностей створить нескінченний цикл!
+                </div>
+            </div>
+
+            <!-- Slide 8: Demo 1 -->
+            <div class="slide" data-slide="8">
+                <h2>💻 Демо: Базовий fetch</h2>
+                <p>Інтерактивний приклад використання useState + useEffect + fetch</p>
+                
+                <div class="snack-embed">
+                    <div data-snack-id="@vlad_y/fetchdata" 
+                         data-snack-platform="web" 
+                         data-snack-preview="true" 
+                         data-snack-theme="dark"
+                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: Service Layer -->
+            <div class="slide" data-slide="9">
+                <h2>🏗️ Service Layer</h2>
+                
+                <h3>Розділення відповідальності:</h3>
+                <ol>
+                    <li><strong>client.js:</strong> HTTP логіка (fetch, headers, помилки)</li>
+                    <li><strong>userService.js:</strong> Бізнес логіка (URL, методи API)</li>
+                    <li><strong>Component:</strong> UI (рендеринг даних)</li>
+                </ol>
+
+                <pre><code>// api/client.js
+export const request = async (url, options = {}) => {
+  const response = await fetch(url, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers
+    }
+  });
+  
+  if (!response.ok) throw new Error('HTTP Error');
+  return response.json();
+};</code></pre>
+
+                <pre><code>// api/userService.js
+import { request } from './client';
+
+export const getAllUsers = () => 
+  request('https://dummyjson.com/users');</code></pre>
+            </div>
+
+            <!-- Slide 10: Demo 2 -->
+            <div class="slide" data-slide="10">
+                <h2>💻 Демо: Service Layer</h2>
+                <p>Приклад з винесеною логікою в сервіси</p>
+                
+                <div class="snack-embed">
+                    <div data-snack-id="@vlad_y/fetchdata-2" 
+                         data-snack-platform="web" 
+                         data-snack-preview="true" 
+                         data-snack-theme="dark"
+                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 11: Custom Hooks -->
+            <div class="slide" data-slide="11">
+                <h2>🎣 Custom Hook: useApi</h2>
+                
+                <p>Винесення логіки керування станом в переповторюваний хук:</p>
+
+                <pre><code>export function useApi(apiFunc) {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const request = async (...args) => {
+    setLoading(true);
+    try {
+      const result = await apiFunc(...args);
+      setData(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { data, error, loading, request };
+}</code></pre>
+
+                <h3>Використання:</h3>
+                <pre><code>const { data, loading, request } = useApi(getAllUsers);
+useEffect(() => { request(); }, []);</code></pre>
+            </div>
+
+            <!-- Slide 12: Demo 3 -->
+            <div class="slide" data-slide="12">
+                <h2>💻 Демо: Custom Hook</h2>
+                <p>Приклад з useApi хуком</p>
+                
+                <div class="snack-embed">
+                    <div data-snack-id="@vlad_y/fetchdata-3" 
+                         data-snack-platform="web" 
+                         data-snack-preview="true" 
+                         data-snack-theme="dark"
+                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 13: Pagination -->
+            <div class="slide" data-slide="13">
+                <h2>📄 Пагінація (Infinite Scroll)</h2>
+                
+                <div class="warning-box">
+                    <strong>Проблема:</strong> Завантаження 10,000 записів зависить телефон!
+                </div>
+
+                <h3>Рішення: Завантаження порціями</h3>
+                <pre><code>const [users, setUsers] = useState([]);
+const [skip, setSkip] = useState(0);
+
+const loadMore = async () => {
+  const newUsers = await getUsersPaginated(10, skip);
+  setUsers(prev => [...prev, ...newUsers]);
+  setSkip(prev => prev + 10);
+};
+
+&lt;FlatList
+  data={users}
+  onEndReached={loadMore}
+  onEndReachedThreshold={0.5}
+/&gt;</code></pre>
+
+                <ul>
+                    <li>1-й запит: limit=10&skip=0</li>
+                    <li>2-й запит: limit=10&skip=10</li>
+                    <li>3-й запит: limit=10&skip=20</li>
+                </ul>
+            </div>
+
+            <!-- Slide 14: Demo 4 -->
+            <div class="slide" data-slide="14">
+                <h2>💻 Демо: Пагінація</h2>
+                <p>Infinite Scroll в дії</p>
+                
+                <div class="snack-embed">
+                    <div data-snack-id="@vlad_y/fetchdata-4" 
+                         data-snack-platform="web" 
+                         data-snack-preview="true" 
+                         data-snack-theme="dark"
+                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 15: Best Practices -->
+            <div class="slide" data-slide="15">
+                <h2>✨ Best Practices</h2>
+                
+                <h3>Корисні бібліотеки:</h3>
+                <ul>
+                    <li><strong>Axios:</strong> Зручніша альтернатива fetch</li>
+                    <li><strong>TanStack Query:</strong> Кешування та автооновлення</li>
+                    <li><strong>NetInfo:</strong> Перевірка з'єднання</li>
+                </ul>
+
+                <h3>Принципи:</h3>
+                <ol>
+                    <li><strong>Separation of Concerns:</strong> Розділяйте логіку</li>
+                    <li><strong>Обробляйте 3 стани:</strong> Loading, Error, Success</li>
+                    <li><strong>Безпека:</strong> Тільки HTTPS</li>
+                    <li><strong>Пагінація:</strong> Завантажуйте порціями</li>
+                </ol>
+
+                <div class="highlight-box">
+                    <strong>Золоте правило:</strong> Компонент малює, Сервіс робить запит, Хук керує станом
+                </div>
+            </div>
+
+            <!-- Slide 16: Common Mistakes -->
+            <div class="slide" data-slide="16">
+                <h2>⚠️ Типові помилки</h2>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Помилка</th>
+                            <th>Проблема</th>
+                            <th>Рішення</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Без try-catch</td>
+                            <td>Додаток крашиться</td>
+                            <td>Завжди обробляйте помилки</td>
+                        </tr>
+                        <tr>
+                            <td>Без індикаторів</td>
+                            <td>Користувач не знає, що відбувається</td>
+                            <td>Використовуйте ActivityIndicator</td>
+                        </tr>
+                        <tr>
+                            <td>Множинні запити</td>
+                            <td>Дублювання даних</td>
+                            <td>disabled={loading}</td>
+                        </tr>
+                        <tr>
+                            <td>Хардкод URL</td>
+                            <td>Важко підтримувати</td>
+                            <td>Винесіть в config файл</td>
+                        </tr>
+                        <tr>
+                            <td>useEffect без deps</td>
+                            <td>Нескінченний цикл</td>
+                            <td>Завжди вказуйте залежності</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Slide 17: Summary -->
+            <div class="slide" data-slide="17">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80%; text-align: center;">
+                    <h2 style="font-size: 3rem; margin-bottom: 2rem; border: none;">🎯 Підсумки</h2>
+                    
+                    <div style="text-align: left; max-width: 800px;">
+                        <h3>Ви навчилися:</h3>
+                        <ul style="font-size: 1.2rem; line-height: 2;">
+                            <li>✅ Розуміти, що таке API та REST</li>
+                            <li>✅ Використовувати fetch для HTTP-запитів</li>
+                            <li>✅ Керувати станом з useState + useEffect</li>
+                            <li>✅ Організовувати код через Service Layer</li>
+                            <li>✅ Створювати Custom Hooks</li>
+                            <li>✅ Реалізовувати пагінацію</li>
+                            <li>✅ Уникати типових помилок</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 3rem; font-size: 1.3rem; color: var(--accent);">
+                        Дякую за увагу! 🚀
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn" onclick="previousSlide()">
+                ← Назад
+            </button>
+            <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+                Вперед →
+            </button>
+        </div>
+
+        <div class="slide-indicators" id="indicators"></div>
+    </div>
+
+    <script async src="https://snack.expo.dev/embed.js"></script>
+    <script>
+        let currentSlide = 1;
+        const totalSlides = document.querySelectorAll('.slide').length;
+
+        // Initialize
+        function init() {
+            document.getElementById('totalSlides').textContent = totalSlides;
+            createIndicators();
+            updateSlide();
+            
+            // Load Snack embeds after a delay
+            setTimeout(() => {
+                if (window.ExpoSnack) {
+                    console.log('Snack loaded');
+                }
+            }, 1000);
+        }
+
+        function createIndicators() {
+            const container = document.getElementById('indicators');
+            for (let i = 1; i <= totalSlides; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                if (i === 1) indicator.classList.add('active');
+                indicator.onclick = () => goToSlide(i);
+                container.appendChild(indicator);
+            }
+        }
+
+        function updateSlide() {
+            // Update slides
+            document.querySelectorAll('.slide').forEach((slide, index) => {
+                slide.classList.remove('active', 'prev');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index + 1 < currentSlide) {
+                    slide.classList.add('prev');
+                }
+            });
+
+            // Update counter
+            document.getElementById('currentSlide').textContent = currentSlide;
+
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index + 1 === currentSlide);
+            });
+
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(slideNum) {
+            if (slideNum >= 1 && slideNum <= totalSlides) {
+                currentSlide = slideNum;
+                updateSlide();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowRight':
+                case ' ':
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                    previousSlide();
+                    break;
+                case 'Home':
+                case 'Escape':
+                    goToSlide(1);
+                    break;
+                case 'End':
+                    goToSlide(totalSlides);
+                    break;
+            }
+        });
+
+        // Touch support for mobile
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) previousSlide();
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
