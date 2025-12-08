@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uk">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -178,14 +179,16 @@
             font-size: 1.3rem;
         }
 
-        p, li {
+        p,
+        li {
             margin-bottom: 1rem;
             color: var(--text-secondary);
             font-size: 1.1rem;
             line-height: 1.8;
         }
 
-        ul, ol {
+        ul,
+        ol {
             margin-left: 2rem;
             margin-bottom: 1.5rem;
         }
@@ -241,7 +244,8 @@
             overflow: hidden;
         }
 
-        th, td {
+        th,
+        td {
             padding: 1rem;
             text-align: left;
             border-bottom: 1px solid var(--border);
@@ -290,6 +294,13 @@
             color: var(--text-secondary);
         }
 
+        .block-row {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
         @media (max-width: 768px) {
             .slide {
                 padding: 2rem 1rem;
@@ -326,12 +337,24 @@
         }
 
         /* Code syntax highlighting */
-        .keyword { color: #ff79c6; }
-        .string { color: #50fa7b; }
-        .function { color: #8be9fd; }
-        .comment { color: #6272a4; }
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .string {
+            color: #50fa7b;
+        }
+
+        .function {
+            color: #8be9fd;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
     </style>
 </head>
+
 <body>
     <div class="presentation-container">
         <div class="header">
@@ -348,7 +371,8 @@
         <div class="slides-wrapper">
             <!-- Slide 1: Title -->
             <div class="slide active" data-slide="1">
-                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80%; text-align: center;">
+                <div
+                    style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80%; text-align: center;">
                     <h2 style="font-size: 4rem; margin-bottom: 2rem; border: none;">🌐 Робота з API</h2>
                     <h3 style="font-size: 2.5rem; color: var(--text-secondary); margin: 0;">в React Native</h3>
                     <p style="margin-top: 3rem; font-size: 1.3rem;">Повний гід від основ до Best Practices</p>
@@ -358,31 +382,38 @@
             <!-- Slide 2: Що таке API -->
             <div class="slide" data-slide="2">
                 <h2>🌐 Що таке API?</h2>
-                
+
                 <div class="highlight-box">
-                    <strong>API (Application Programming Interface)</strong> — це міст між вашим мобільним додатком (клієнтом) та сервером (бекендом).
+                    <strong>API (Application Programming Interface)</strong> — це міст між вашим мобільним додатком
+                    (клієнтом) та сервером (бекендом).
                 </div>
 
                 <h3>Аналогія з рестораном:</h3>
                 <ul>
-                    <li><strong>Ви (Клієнт/React Native App):</strong> Хочете їсти, але не можете зайти на кухню і готувати самі.</li>
-                    <li><strong>Кухня (Сервер/База даних):</strong> Там є продукти та інструменти для приготування страв (даних).</li>
-                    <li><strong>Офіціант (API):</strong> Ви даєте йому замовлення (Запит), він несе його на кухню, кухня готує, офіціант приносить вам страву (Відповідь).</li>
+                    <li><strong>Ви (Клієнт/React Native App):</strong> Хочете їсти, але не можете зайти на кухню і
+                        готувати самі.</li>
+                    <li><strong>Кухня (Сервер/База даних):</strong> Там є продукти та інструменти для приготування страв
+                        (даних).</li>
+                    <li><strong>Офіціант (API):</strong> Ви даєте йому замовлення (Запит), він несе його на кухню, кухня
+                        готує, офіціант приносить вам страву (Відповідь).</li>
                 </ul>
 
-                <p style="margin-top: 2rem; font-size: 1.2rem;">Без API ваш додаток був би ізольованим і не міг би показувати актуальні новини, погоду чи спілкуватися з іншими користувачами.</p>
+                <p style="margin-top: 2rem; font-size: 1.2rem;">Без API ваш додаток був би ізольованим і не міг би
+                    показувати актуальні новини, погоду чи спілкуватися з іншими користувачами.</p>
             </div>
 
             <!-- Slide 3: REST API -->
             <div class="slide" data-slide="3">
                 <h2>🔄 REST API та JSON</h2>
-                
+
                 <h3>REST (Representational State Transfer)</h3>
                 <p><strong>REST</strong> — це набір правил, як клієнт і сервер мають спілкуватися.</p>
-                
+
                 <ul>
-                    <li><strong>Ресурс:</strong> В REST все є "ресурсом" (користувач, пост, товар). Кожен ресурс має свою унікальну адресу (URL).</li>
-                    <li><strong>Stateless:</strong> Кожен запит має містити всю необхідну інформацію. Сервер не "пам'ятає", що ви питали 5 секунд тому.</li>
+                    <li><strong>Ресурс:</strong> В REST все є "ресурсом" (користувач, пост, товар). Кожен ресурс має
+                        свою унікальну адресу (URL).</li>
+                    <li><strong>Stateless:</strong> Кожен запит має містити всю необхідну інформацію. Сервер не
+                        "пам'ятає", що ви питали 5 секунд тому.</li>
                 </ul>
 
                 <h3>JSON (JavaScript Object Notation)</h3>
@@ -397,13 +428,16 @@
             <!-- Slide 4: HTTP Methods -->
             <div class="slide" data-slide="4">
                 <h2>📡 HTTP методи</h2>
-                
-                <p style="font-size: 1.2rem;">Коли ми звертаємося до сервера, ми маємо сказати <strong>дієслово</strong> — що ми хочемо зробити з ресурсом.</p>
+
+                <p style="font-size: 1.2rem;">Коли ми звертаємося до сервера, ми маємо сказати <strong>дієслово</strong>
+                    — що ми хочемо зробити з ресурсом.</p>
 
                 <h3>Основні методи:</h3>
                 <ol>
-                    <li><strong>GET (Отримати):</strong> "Дай мені список новин". Безпечний метод, нічого не змінює.</li>
-                    <li><strong>POST (Створити):</strong> "Створи нового користувача". Відправляємо дані в тілі запиту.</li>
+                    <li><strong>GET (Отримати):</strong> "Дай мені список новин". Безпечний метод, нічого не змінює.
+                    </li>
+                    <li><strong>POST (Створити):</strong> "Створи нового користувача". Відправляємо дані в тілі запиту.
+                    </li>
                     <li><strong>PUT / PATCH (Оновити):</strong>
                         <ul>
                             <li><strong>PUT:</strong> Повна заміна</li>
@@ -422,7 +456,7 @@ Body: { "name": "John" }</code></pre>
             <!-- Slide 5: fetch Basics -->
             <div class="slide" data-slide="5">
                 <h2>🚀 fetch в React Native</h2>
-                
+
                 <div class="highlight-box">
                     <strong>fetch</strong> — вбудований метод для HTTP-запитів. Працює так само, як у браузері.
                 </div>
@@ -442,14 +476,15 @@ Body: { "name": "John" }</code></pre>
                 </ul>
 
                 <div class="warning-box">
-                    <strong>⚠️ Важливо:</strong> fetch повертає Promise. Код після fetch виконається раніше, ніж прийдуть дані!
+                    <strong>⚠️ Важливо:</strong> fetch повертає Promise. Код після fetch виконається раніше, ніж
+                    прийдуть дані!
                 </div>
             </div>
 
             <!-- Slide 6: fetch Examples -->
             <div class="slide" data-slide="6">
                 <h2>📝 Приклади fetch</h2>
-                
+
                 <h3>GET-запит:</h3>
                 <pre><code>fetch('https://api.example.com/posts')
   .then(response => {
@@ -477,14 +512,49 @@ Body: { "name": "John" }</code></pre>
             <!-- Slide 7: useState + useEffect -->
             <div class="slide" data-slide="7">
                 <h2>⚛️ useState + useEffect</h2>
-                
-                <h3>Три стани для роботи з мережею:</h3>
+
+                <h4>Щоб відобразити дані з сервера, нам потрібно вирішити дві задачі:</h4>
+                <ul>
+                    <li><b>Де зберігати дані?</b> (Звичайні змінні <code>var/let</code> не працюють, бо вони не
+                        оновлюють екран).</li>
+                    <li><strong>Коли робити запит?</strong> (Ми не можемо робити запит просто в тілі функції компонента,
+                        бо він буде виконуватися при кожному перемальовуванні).</li>
+                </ul>
+                <h3><code>useState</code>: Керування станом даних</h3>
+                <h4>Три стани для роботи з мережею:</h4>
                 <ol>
                     <li><strong>Data:</strong> Те, що прийшло з сервера</li>
                     <li><strong>Loading:</strong> Чи чекаємо ми на відповідь?</li>
                     <li><strong>Error:</strong> Чи сталося щось погане?</li>
                 </ol>
 
+                <pre><code>import React, { useState } from 'react';
+
+const UsersScreen = () => {
+  // Початковий стан: даних немає (порожній масив), завантаження йде, помилок немає
+  const [users, setUsers] = useState([]); 
+  const [isLoading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
+  
+  // ...</code></pre>
+            </div>
+
+
+            <!-- Slide 7.1: useState + useEffect -->
+            <div class="slide" data-slide="7.1">
+                <h2>⚛️ useState + useEffect</h2>
+
+                <h4>Щоб відобразити дані з сервера, нам потрібно вирішити дві задачі:</h4>
+                <ul>
+                    <li><b>Де зберігати дані?</b> (Звичайні змінні <code>var/let</code> не працюють, бо вони не
+                        оновлюють екран).</li>
+                    <li><strong>Коли робити запит?</strong> (Ми не можемо робити запит просто в тілі функції
+                        компонента,
+                        бо він буде виконуватися при кожному перемальовуванні).</li>
+                </ul>
+                <h3><code>useEffect</code>: Тригер для запиту</h3>
+                <p><code>useEffect</code> — це хук для виконання "побічних ефектів" (side effects). Запит на сервер
+                    — це класичний побічний ефект.</p>
                 <pre><code>const [data, setData] = useState([]);
 const [loading, setLoading] = useState(true);
 const [error, setError] = useState(null);
@@ -497,8 +567,20 @@ useEffect(() => {
     .finally(() => setLoading(false));
 }, []); // Порожній масив = запит один раз</code></pre>
 
+                <ul>
+                    <li><code>[]</code> (Порожній масив): Ефект виконається тільки один раз після першого монтування
+                        компонента.
+                        Це те, що нам треба для завантаження даних при відкритті екрану.</li>
+                    <li><code>[userId]</code> (Масив зі змінною): Ефект виконається при старті І кожного разу, коли
+                        змінюється
+                        <code>userId</code>. Це корисно для пошуку або перемикання профілів.
+                    </li>
+                    <li>(Без масиву): Ефект виконуватиметься при кожному рендері.</li>
+                </ul>
+
                 <div class="warning-box">
-                    <strong>⚠️ Увага:</strong> useEffect без масиву залежностей створить нескінченний цикл!
+                    <strong>⚠️ Увага:</strong> useEffect без масиву залежностей і в ньому ж <code>setState</code>
+                    створить нескінченний цикл!
                 </div>
             </div>
 
@@ -506,13 +588,11 @@ useEffect(() => {
             <div class="slide" data-slide="8">
                 <h2>💻 Демо: Базовий fetch</h2>
                 <p>Інтерактивний приклад використання useState + useEffect + fetch</p>
-                
+
                 <div class="snack-embed">
-                    <div data-snack-id="@vlad_y/fetchdata" 
-                         data-snack-platform="web" 
-                         data-snack-preview="true" 
-                         data-snack-theme="dark"
-                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    <div data-snack-id="@vlad_y/fetchdata" data-snack-platform="web" data-snack-preview="true"
+                        data-snack-theme="dark"
+                        style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
                     </div>
                 </div>
             </div>
@@ -520,15 +600,24 @@ useEffect(() => {
             <!-- Slide 9: Service Layer -->
             <div class="slide" data-slide="9">
                 <h2>🏗️ Service Layer</h2>
-                
+
                 <h3>Розділення відповідальності:</h3>
                 <ol>
-                    <li><strong>client.js:</strong> HTTP логіка (fetch, headers, помилки)</li>
-                    <li><strong>userService.js:</strong> Бізнес логіка (URL, методи API)</li>
-                    <li><strong>Component:</strong> UI (рендеринг даних)</li>
+                    <li><strong>Базовий клієнт:</strong> Вміє просто робити HTTP-запити</li>
+                    <li><strong>Сервіси:</strong> Знають, які дані потрібні бізнесу (Користувачі, Товари)</li>
+                    <li><strong>UI (Компоненти):</strong> Знають тільки те, як ці дані намалювати (рендеринг даних)</li>
                 </ol>
+                <h4>Структура проєкту</h4>
+                <div class="block-row">
+                    <pre><code>src/
+├── api/
+│   ├── client.js         <-- Базова "обгортка" над fetch (HTTP логіка)
+│   └── userService.js    <-- Функції для роботи з користувачами (Бізнес логіка)
+├── screens/
+│   └── UsersScreen.js    <-- Екран відображення (UI)
+└── App.js</code></pre>
 
-                <pre><code>// api/client.js
+                    <pre><code>// api/client.js
 export const request = async (url, options = {}) => {
   const response = await fetch(url, {
     ...options,
@@ -542,24 +631,23 @@ export const request = async (url, options = {}) => {
   return response.json();
 };</code></pre>
 
-                <pre><code>// api/userService.js
+                    <pre><code>// api/userService.js
 import { request } from './client';
 
 export const getAllUsers = () => 
   request('https://dummyjson.com/users');</code></pre>
+                </div>
             </div>
 
             <!-- Slide 10: Demo 2 -->
             <div class="slide" data-slide="10">
                 <h2>💻 Демо: Service Layer</h2>
                 <p>Приклад з винесеною логікою в сервіси</p>
-                
+
                 <div class="snack-embed">
-                    <div data-snack-id="@vlad_y/fetchdata-2" 
-                         data-snack-platform="web" 
-                         data-snack-preview="true" 
-                         data-snack-theme="dark"
-                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    <div data-snack-id="@vlad_y/fetchdata-2" data-snack-platform="web" data-snack-preview="true"
+                        data-snack-theme="dark"
+                        style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
                     </div>
                 </div>
             </div>
@@ -567,8 +655,15 @@ export const getAllUsers = () =>
             <!-- Slide 11: Custom Hooks -->
             <div class="slide" data-slide="11">
                 <h2>🎣 Custom Hook: useApi</h2>
-                
-                <p>Винесення логіки керування станом в переповторюваний хук:</p>
+                <div class="highlight-box">
+                    <p>Якщо <code>userService</code> (Service Layer) вирішує проблему <b>"Як робити запит"</b> (URL,
+                        headers, JSON), то <code>Custom Hook (useApi)</code> вирішує проблему <b>"Як керувати станом
+                            запиту"</b> (loading, error, data).</p>
+
+                    <p>Винесення логіки керування станом в переповторюваний хук дозволяє прибрати з компонентів
+                        дублювання
+                        коду <code>useState (loading, error, data)</code> в кожному екрані:</p>
+                </div>
 
                 <pre><code>export function useApi(apiFunc) {
   const [data, setData] = useState(null);
@@ -599,13 +694,11 @@ useEffect(() => { request(); }, []);</code></pre>
             <div class="slide" data-slide="12">
                 <h2>💻 Демо: Custom Hook</h2>
                 <p>Приклад з useApi хуком</p>
-                
+
                 <div class="snack-embed">
-                    <div data-snack-id="@vlad_y/fetchdata-3" 
-                         data-snack-platform="web" 
-                         data-snack-preview="true" 
-                         data-snack-theme="dark"
-                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    <div data-snack-id="@vlad_y/fetchdata-3" data-snack-platform="web" data-snack-preview="true"
+                        data-snack-theme="dark"
+                        style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
                     </div>
                 </div>
             </div>
@@ -613,7 +706,7 @@ useEffect(() => { request(); }, []);</code></pre>
             <!-- Slide 13: Pagination -->
             <div class="slide" data-slide="13">
                 <h2>📄 Пагінація (Infinite Scroll)</h2>
-                
+
                 <div class="warning-box">
                     <strong>Проблема:</strong> Завантаження 10,000 записів зависить телефон!
                 </div>
@@ -645,13 +738,11 @@ const loadMore = async () => {
             <div class="slide" data-slide="14">
                 <h2>💻 Демо: Пагінація</h2>
                 <p>Infinite Scroll в дії</p>
-                
+
                 <div class="snack-embed">
-                    <div data-snack-id="@vlad_y/fetchdata-4" 
-                         data-snack-platform="web" 
-                         data-snack-preview="true" 
-                         data-snack-theme="dark"
-                         style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
+                    <div data-snack-id="@vlad_y/fetchdata-4" data-snack-platform="web" data-snack-preview="true"
+                        data-snack-theme="dark"
+                        style="overflow:hidden;background:#0C0D0E;border:1px solid var(--color-border);border-radius:4px;height:100%;width:100%">
                     </div>
                 </div>
             </div>
@@ -659,7 +750,7 @@ const loadMore = async () => {
             <!-- Slide 15: Best Practices -->
             <div class="slide" data-slide="15">
                 <h2>✨ Best Practices</h2>
-                
+
                 <h3>Корисні бібліотеки:</h3>
                 <ul>
                     <li><strong>Axios:</strong> Зручніша альтернатива fetch</li>
@@ -683,7 +774,7 @@ const loadMore = async () => {
             <!-- Slide 16: Common Mistakes -->
             <div class="slide" data-slide="16">
                 <h2>⚠️ Типові помилки</h2>
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -724,9 +815,10 @@ const loadMore = async () => {
 
             <!-- Slide 17: Summary -->
             <div class="slide" data-slide="17">
-                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80%; text-align: center;">
+                <div
+                    style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 80%; text-align: center;">
                     <h2 style="font-size: 3rem; margin-bottom: 2rem; border: none;">🎯 Підсумки</h2>
-                    
+
                     <div style="text-align: left; max-width: 800px;">
                         <h3>Ви навчилися:</h3>
                         <ul style="font-size: 1.2rem; line-height: 2;">
@@ -769,7 +861,7 @@ const loadMore = async () => {
             document.getElementById('totalSlides').textContent = totalSlides;
             createIndicators();
             updateSlide();
-            
+
             // Load Snack embeds after a delay
             setTimeout(() => {
                 if (window.ExpoSnack) {
@@ -836,7 +928,7 @@ const loadMore = async () => {
 
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
-            switch(e.key) {
+            switch (e.key) {
                 case 'ArrowRight':
                 case ' ':
                     nextSlide();
@@ -876,4 +968,5 @@ const loadMore = async () => {
         init();
     </script>
 </body>
+
 </html>
