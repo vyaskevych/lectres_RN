@@ -1,0 +1,1589 @@
+<!DOCTYPE html>
+<html lang="uk">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Курсова робота з програмування – 2025 · КСУ Грінченка</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ─── EZARION (university custom font; Montserrat fallback) ─── */
+    @font-face {
+      font-family: 'Ezarion';
+      font-weight: 700;
+      src: local('Ezarion Bold'), local('EzarionBold');
+    }
+
+    @font-face {
+      font-family: 'Ezarion';
+      font-weight: 500;
+      src: local('Ezarion Medium'), local('EzarionMedium');
+    }
+
+    :root {
+      --teal: #0099A8;
+      --teal-d: #007A87;
+      --teal-l: #E6F6F8;
+      --dark: #0E2435;
+      --mid: #2B4459;
+      --muted: #6B8A9E;
+      --line: #D6E8EB;
+      --bg: #F4F8FA;
+      --white: #FFFFFF;
+      --head: 'Ezarion', 'Montserrat', sans-serif;
+      --body: 'Montserrat', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--body);
+      background: var(--bg);
+      color: var(--dark);
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 5rem;
+      opacity: 0;
+      transform: translateX(28px);
+      transition: opacity .4s ease, transform .4s ease;
+      pointer-events: none;
+      background: var(--white);
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: none;
+      pointer-events: all;
+    }
+
+    .slide.out {
+      opacity: 0;
+      transform: translateX(-28px);
+    }
+
+    /* teal left accent on content slides */
+    .slide:not(#s1):not(#s_last)::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--teal);
+    }
+
+    /* top gradient bar */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--teal), var(--teal-d));
+      z-index: 200;
+    }
+
+    /* nav */
+    nav {
+      position: fixed;
+      bottom: 1.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--white);
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      padding: .5rem 1.3rem;
+      box-shadow: 0 4px 20px rgba(0, 153, 168, .12);
+      z-index: 100;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 1rem;
+      padding: .25rem .5rem;
+      transition: color .2s;
+    }
+
+    nav button:hover {
+      color: var(--teal);
+    }
+
+    #progress {
+      font-family: var(--head);
+      font-size: .6rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .15em;
+      min-width: 3.5rem;
+      text-align: center;
+    }
+
+    .dots {
+      display: flex;
+      gap: .4rem;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--line);
+      cursor: pointer;
+      transition: background .25s, transform .25s;
+    }
+
+    .dot.active {
+      background: var(--teal);
+      transform: scale(1.4);
+    }
+
+    .key-label {
+      position: fixed;
+      bottom: 1.6rem;
+      right: 1.8rem;
+      font-size: .6rem;
+      color: var(--line);
+      z-index: 100;
+      letter-spacing: .08em;
+    }
+
+    /* slide number */
+    .slide-no {
+      position: absolute;
+      bottom: 1.6rem;
+      right: 2rem;
+      font-family: var(--head);
+      font-size: .55rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      color: var(--line);
+    }
+
+    /* section tag & title */
+    .section-tag {
+      font-family: var(--head);
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: .6rem;
+    }
+
+    .slide-title {
+      font-family: var(--head);
+      font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 1.6rem;
+      line-height: 1.15;
+    }
+
+    .full-w {
+      width: 100%;
+      max-width: 960px;
+    }
+
+    /* highlight box */
+    .highlight {
+      background: var(--teal-l);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      padding: 1rem 1.4rem;
+      width: 100%;
+      max-width: 860px;
+      margin-bottom: 1.2rem;
+    }
+
+    .highlight p {
+      font-size: .8rem;
+      line-height: 1.65;
+      color: var(--mid);
+    }
+
+    .highlight b {
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    /* cards */
+    .card {
+      background: var(--bg);
+      border: 1.5px solid var(--line);
+      border-left: 4px solid var(--teal);
+      border-radius: 14px;
+      padding: 1.2rem 1.4rem;
+    }
+
+    .card h3 {
+      font-family: var(--head);
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .7rem;
+    }
+
+    .card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .42rem;
+    }
+
+    .card ul li {
+      font-size: .76rem;
+      color: var(--mid);
+      line-height: 1.5;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .card ul li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: .65rem;
+      top: .08rem;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    /* stat cards */
+    .stat-row {
+      display: flex;
+      gap: 1.2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .stat-card {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg);
+      border: 1.5px solid var(--line);
+      border-top: 4px solid var(--teal);
+      border-radius: 14px;
+      padding: 1.6rem 1.3rem;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: var(--head);
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: var(--teal);
+      line-height: 1;
+      margin-bottom: .45rem;
+    }
+
+    .stat-name {
+      font-family: var(--head);
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: .4rem;
+    }
+
+    .stat-label {
+      font-size: .72rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* mini grid */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .95rem;
+    }
+
+    .mini-card {
+      background: var(--bg);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: .95rem 1.05rem;
+    }
+
+    .mini-card .mc-label {
+      font-family: var(--head);
+      font-size: .6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--teal);
+      margin-bottom: .45rem;
+    }
+
+    .mini-card .mc-val {
+      font-size: .74rem;
+      color: var(--mid);
+      line-height: 1.55;
+    }
+
+    .mini-card .mc-val b {
+      color: var(--dark);
+      font-weight: 700;
+    }
+
+    /* steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+      width: 100%;
+      max-width: 860px;
+    }
+
+    .step {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      background: var(--bg);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: .85rem 1.15rem;
+      transition: border-color .2s;
+    }
+
+    .step:hover {
+      border-color: var(--teal);
+    }
+
+    .step-num {
+      font-family: var(--head);
+      font-size: .68rem;
+      font-weight: 900;
+      color: var(--white);
+      background: var(--teal);
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step-body h4 {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: .12rem;
+    }
+
+    .step-body p {
+      font-size: .72rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* timeline */
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .85rem;
+      width: 100%;
+      max-width: 960px;
+    }
+
+    .t-item {
+      background: var(--bg);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: .85rem 1rem;
+      position: relative;
+    }
+
+    .t-item .phase {
+      font-family: var(--head);
+      font-size: .57rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: .3rem;
+    }
+
+    .t-item h4 {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: .28rem;
+    }
+
+    .t-item p {
+      font-size: .68rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .t-badge {
+      position: absolute;
+      top: .7rem;
+      right: .7rem;
+      font-family: var(--head);
+      font-size: .54rem;
+      font-weight: 700;
+      padding: .17rem .48rem;
+      border-radius: 999px;
+    }
+
+    .b-t {
+      background: var(--teal-l);
+      color: var(--teal);
+    }
+
+    .b-p {
+      background: rgba(124, 58, 237, .1);
+      color: #7c3aed;
+    }
+
+    .b-g {
+      background: rgba(16, 185, 129, .1);
+      color: #059669;
+    }
+
+    .b-r {
+      background: rgba(239, 68, 68, .1);
+      color: #dc2626;
+    }
+
+    /* grade cards */
+    .grade-row {
+      display: flex;
+      gap: 1.1rem;
+      width: 100%;
+      max-width: 860px;
+      flex-wrap: wrap;
+    }
+
+    .grade-card {
+      flex: 1;
+      min-width: 200px;
+      background: var(--bg);
+      border: 1.5px solid var(--line);
+      border-top: 4px solid var(--teal);
+      border-radius: 14px;
+      padding: 1.25rem;
+    }
+
+    .grade-card.gc2 {
+      border-top-color: var(--teal-d);
+    }
+
+    .grade-card.gc3 {
+      border-top-color: var(--mid);
+    }
+
+    .grade-card h3 {
+      font-family: var(--head);
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: .8rem;
+      color: var(--teal);
+    }
+
+    .gc2 h3 {
+      color: var(--teal-d);
+    }
+
+    .gc3 h3 {
+      color: var(--mid);
+    }
+
+    .grade-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .42rem;
+    }
+
+    .grade-card ul li {
+      font-size: .73rem;
+      color: var(--mid);
+      padding-left: .9rem;
+      position: relative;
+      line-height: 1.5;
+    }
+
+    .grade-card ul li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: .68rem;
+    }
+
+    /* animations */
+    .slide.active>* {
+      animation: fadeUp .38s ease forwards;
+    }
+
+    .slide.active>*:nth-child(1) {
+      animation-delay: .04s;
+      opacity: 0;
+    }
+
+    .slide.active>*:nth-child(2) {
+      animation-delay: .10s;
+      opacity: 0;
+    }
+
+    .slide.active>*:nth-child(3) {
+      animation-delay: .16s;
+      opacity: 0;
+    }
+
+    .slide.active>*:nth-child(4) {
+      animation-delay: .22s;
+      opacity: 0;
+    }
+
+    .slide.active>*:nth-child(5) {
+      animation-delay: .28s;
+      opacity: 0;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    /* ═══ SLIDE 1 — TITLE ═══ */
+    #s1 {
+      background: var(--dark);
+      flex-direction: row;
+      align-items: stretch;
+      padding: 0;
+      gap: 0;
+    }
+
+    #s1::before {
+      display: none;
+    }
+
+    .s1-left {
+      width: 40%;
+      background: var(--mid);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.2rem 2.6rem;
+    }
+
+    .s1-logo {
+      width: 95%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .s1-label {
+      font-family: var(--head);
+      font-size: .58rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .7);
+      margin-bottom: .7rem;
+    }
+
+    .s1-left h2 {
+      font-family: var(--head);
+      font-size: .92rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, .9);
+      line-height: 1.6;
+      max-width: 220px;
+    }
+
+    .s1-right {
+      /*background:var(--teal);*/
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3.2rem 3.2rem 3.2rem 2.8rem;
+    }
+
+    .s1-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(0, 153, 168, .2);
+      border: 1px solid rgba(0, 153, 168, .4);
+      border-radius: 999px;
+      padding: .28rem .9rem;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      color: var(--teal);
+      text-transform: uppercase;
+      margin-bottom: 1.7rem;
+      width: fit-content;
+    }
+
+    .s1-right h1 {
+      font-family: var(--head);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.08;
+      margin-bottom: .9rem;
+    }
+
+    .s1-right h1 span {
+      color: var(--teal);
+    }
+
+    .s1-sub {
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .5);
+      line-height: 1.7;
+      margin-bottom: 2.2rem;
+    }
+
+    .chips-row {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      border: 1.5px solid rgba(0, 153, 168, .35);
+      border-radius: 10px;
+      padding: .5rem .95rem;
+      font-size: .73rem;
+      font-weight: 600;
+      color: var(--white);
+      background: rgba(0, 153, 168, .1);
+    }
+
+    .chip-ic {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .82rem;
+    }
+
+    /* ═══ SLIDE LAST ═══ */
+    #s_last {
+      background: var(--dark);
+      text-align: center;
+    }
+
+    #s_last::before {
+      display: none;
+    }
+
+    .final-logo {
+      width: 90px;
+      margin-bottom: 1.8rem;
+      opacity: .9;
+    }
+
+    .final-big {
+      font-family: var(--head);
+      font-size: clamp(1.9rem, 5vw, 3.2rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.1;
+      margin-bottom: .9rem;
+    }
+
+    .final-big span {
+      color: var(--teal);
+    }
+
+    .final-sub {
+      font-size: .86rem;
+      color: rgba(255, 255, 255, .48);
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .final-chips {
+      display: flex;
+      gap: .8rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .f-chip {
+      background: rgba(0, 153, 168, .12);
+      border: 1.5px solid rgba(0, 153, 168, .3);
+      border-radius: 10px;
+      padding: .62rem 1.15rem;
+      font-size: .77rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    .f-chip b {
+      color: var(--teal);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-bar"></div>
+  <div class="deck" id="deck">
+
+    <!-- ══ SLIDE 1 — TITLE ══ -->
+    <div class="slide active" id="s1">
+      <div class="s1-left">
+        <img class="s1-logo" src="https://kubg.edu.ua/images/stories/Departaments/ndl.co/logo/logo_05.png"
+          alt="КСУ Грінченка" onerror="this.style.opacity='.3'">
+        <div>
+          <div class="s1-label">Факультет ІТМ · Кафедра КН</div>
+          <h2>Спеціальність<br>«Комп'ютерні науки»<br>Бакалаврат · 6 семестр</h2>
+        </div>
+      </div>
+      <div class="s1-right">
+        <div class="s1-tag">📘 2025 · Методичні рекомендації</div>
+        <h1>Курсова робота<br>з <span>програмування</span></h1>
+        <p class="s1-sub">
+          Вимоги до виконання, структури та захисту<br>
+          Укладачі: Яскевич В.О., Машкіна І.В.
+        </p>
+        <div class="chips-row">
+          <div class="chip">
+            <div class="chip-ic">💻</div>Проєкт
+          </div>
+          <div class="chip">
+            <div class="chip-ic">📄</div>Пояснювальна записка
+          </div>
+          <div class="chip">
+            <div class="chip-ic">🎞</div>Презентація
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 2 — МЕТА ══ -->
+    <div class="slide" id="s2">
+      <div class="slide-no">02 · 13</div>
+      <div class="section-tag">Мета та завдання курсової роботи</div>
+      <h2 class="slide-title">Чого прагнемо досягти?</h2>
+      <div class="highlight">
+        <p><b>Мета:</b> сформувати здатність самостійно аналізувати інженерну задачу, проєктувати програмні рішення,
+          реалізовувати, тестувати та документувати програмні модулі або застосунки з урахуванням кращих практик —
+          <b>архітектури, читабельності, тестування, безпеки та Git</b>.
+        </p>
+      </div>
+      <div class="two-col full-w">
+        <div class="card">
+          <h3>⚙️ Технічні компетенції</h3>
+          <ul>
+            <li>Постановка мети, функціональних і нефункціональних вимог</li>
+            <li>Розробка архітектури (UML, алгоритми, структури даних)</li>
+            <li>Реалізація з ООП / SOLID / функціональним підходом</li>
+            <li>Тестування, профілювання та оптимізація</li>
+            <li>Оцінка безпеки (вхідні дані, автентифікація, уразливості)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>📚 Документування та захист</h3>
+          <ul>
+            <li>Самостійне планування роботи по етапах</li>
+            <li>Аналіз наукових і практичних джерел (≥ 20)</li>
+            <li>Оформлення пояснювальної записки (30–40 стор.)</li>
+            <li>Ведення Git-репозиторію з README та інструкцією</li>
+            <li>Підготовка доповіді й відповідей на запитання комісії</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 3 — ТРИ РЕЗУЛЬТАТИ ══ -->
+    <div class="slide" id="s3">
+      <div class="slide-no">03 · 13</div>
+      <div class="section-tag">Обов'язкові результати роботи</div>
+      <h2 class="slide-title">Три складові курсової роботи</h2>
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-num">01</div>
+          <div class="stat-name">Програмний проєкт</div>
+          <div class="stat-label">Репозиторій на Git: код, README, інструкція збірки та запуску, тести, коментарі</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">02</div>
+          <div class="stat-name">Пояснювальна записка</div>
+          <div class="stat-label">30–40 сторінок: вступ, аналітика, проєктування, реалізація, тестування, висновки, ≥ 20
+            джерел</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">03</div>
+          <div class="stat-name">Презентація</div>
+          <div class="stat-label">~10 слайдів: тема → мета → завдання → аналоги → вимоги → стек → архітектура → демо →
+            висновки</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 4 — ПРОГРАМНИЙ ПРОЄКТ ══ -->
+    <!-- <div class="slide" id="s4">
+      <div class="slide-no">04 · 09</div>
+      <div class="section-tag">Результат 01 — Програмний проєкт</div>
+      <h2 class="slide-title">Вимоги до програмного продукту</h2>
+      <div class="grid-3 full-w">
+        <div class="mini-card">
+          <div class="mc-label">🏗 Архітектура</div>
+          <div class="mc-val"><b>Модульна структура</b>, UML-діаграми класів, компонентів та послідовності.
+            SOLID-принципи.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-label">⚙️ Реалізація</div>
+          <div class="mc-val">ООП або функціональний підхід. <b>Читабельний код</b>, коментарі, обробка помилок,
+            безпека.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-label">🔬 Тестування</div>
+          <div class="mc-val">Ручне та/або автоматизоване. <b>Результати</b>, виправлення виявлених помилок.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-label">🗂 Git-репозиторій</div>
+          <div class="mc-val">README з описом, <b>інструкція збірки</b> та запуску, перелік залежностей.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-label">🛠 Стек технологій</div>
+          <div class="mc-val">Мова, фреймворки, бібліотеки, СУБД. <b>Обґрунтований вибір</b> у записці.</div>
+        </div>
+        <div class="mini-card">
+          <div class="mc-label">🎬 Демонстрація</div>
+          <div class="mc-val">Відео до <b>2 хвилин</b> або посилання + QR-код на розгорнутий застосунок.</div>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- ══ SLIDE 4 — ENGINEERING REQUIREMENTS ══ -->
+    <div class="slide" id="s4">
+      <div class="slide-no">04 · 13</div>
+
+      <div class="section-tag">Результат 01 — Програмний проєкт</div>
+      <h2 class="slide-title">Вимоги до програмного продукту</h2>
+
+      <div class="grid-3 full-w">
+
+        <div class="mini-card">
+          <div class="mc-label">🏗 Architecture</div>
+          <div class="mc-val">
+            Модульна структура<br>
+            UML (класи / компоненти)<br>
+            Чіткий розподіл відповідальностей
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">📋 Requirements</div>
+          <div class="mc-val">
+            Функціональні вимоги<br>
+            Нефункціональні вимоги<br>
+            Use-case / User Stories
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">💻 Code Quality</div>
+          <div class="mc-val">
+            SOLID / clean code<br>
+            Обробка помилок<br>
+            Валідація даних
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">🗄 Data & Integration</div>
+          <div class="mc-val">
+            База даних або API<br>
+            Збереження стану<br>
+            Логування
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">🧪 Testing</div>
+          <div class="mc-val">
+            Тест-кейси<br>
+            Unit tests — бажано<br>
+            Перевірка edge cases
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">🚀 Delivery</div>
+          <div class="mc-val">
+            Git-репозиторій<br>
+            README + інструкція запуску<br>
+            Демо ≤ 2 хв
+          </div>
+        </div>
+
+      </div>
+
+      <div class="highlight" style="margin-top:1rem;">
+        <p><b>Курсова робота повинна демонструвати готовність до production-рівня.</b><br>
+          Не лише “працює”, а структурована, протестована та документована.</p>
+      </div>
+    </div>
+
+
+    <!-- ══ SLIDE — ENGINEERING WORKFLOW ══ -->
+    <div class="slide" id="s_eng">
+      <div class="slide-no">10 · 13</div>
+      <div class="section-tag">Engineering Standard · Software Development Lifecycle</div>
+      <h2 class="slide-title">Повний цикл розробки програмного продукту</h2>
+
+
+      <div class="grid-3 full-w">
+        <div class="mini-card">
+          <div class="mc-label">01 · Discovery</div>
+          <div class="mc-val">
+            Аналіз проблеми, цільової аудиторії, бізнес-логіки.<br>
+            Формування цінності продукту.
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">02 · Requirements</div>
+          <div class="mc-val">
+            SRS, use-case / user stories,<br>
+            acceptance criteria,<br>
+            нефункціональні вимоги.
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">03 · Architecture</div>
+          <div class="mc-val">
+            Діаграми класів / компонентів,<br>
+            визначення стеку,<br>
+            структура БД.
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">04 · Implementation</div>
+          <div class="mc-val">
+            Git workflow,<br>
+            осмислені коміти,<br>
+            читабельний код.
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">05 · Testing</div>
+          <div class="mc-val">
+            Unit / integration / manual testing,<br>
+            тест-кейси,<br>
+            аналіз дефектів.
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">06 · Delivery</div>
+          <div class="mc-val">
+            README, інструкція запуску,<br>
+            демо (≤ 2 хв),<br>
+            деплой або збірка.
+          </div>
+        </div>
+      </div>
+
+      <div class="highlight" style="margin-top:1rem;">
+        <p><b>Курсова = mini production-ready продукт.</b>
+          Ви демонструєте не просто код, а повний інженерний процес.</p>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE — REQUIREMENTS STANDARD ══ -->
+    <div class="slide" id="s_req_std">
+      <div class="slide-no">11 · 13</div>
+      <div class="section-tag">Engineering Requirement Standard</div>
+      <h2 class="slide-title">Формування вимог</h2>
+
+      <div class="two-col full-w">
+
+        <div class="card">
+          <h3>📋 Functional Requirements</h3>
+          <ul>
+            <li>Чітко описані функції системи</li>
+            <li>Use-case або 5–10 User Stories</li>
+            <li>Сценарії обробки помилок</li>
+            <li>Edge cases</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>⚙️ Non-Functional Requirements</h3>
+          <ul>
+            <li>Продуктивність (response time)</li>
+            <li>Безпека (валідація, авторизація)</li>
+            <li>Надійність</li>
+            <li>UX та зручність</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="highlight" style="margin-top:1rem;">
+        <p><b>Вимога повинна бути:</b> конкретною · вимірюваною · перевірюваною.<br>
+          ❌ “Система працює швидко” → НЕприпустимо.<br>
+          ✅ “Час відповіді &lt; 1 сек при 1000 запитах” → коректно.</p>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE — TECHNICAL LEVEL ══ -->
+    <div class="slide" id="s_level">
+      <div class="slide-no">12 · 13</div>
+      <div class="section-tag">Technical Expectations</div>
+      <h2 class="slide-title">Мінімальний інженерний рівень курсової</h2>
+
+      <div class="grid-3 full-w">
+
+        <div class="mini-card">
+          <div class="mc-label">Architecture</div>
+          <div class="mc-val">
+            ≥ 5–7 сутностей (класи / модулі)<br>
+            Чітка структура проєкту
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">Data Layer</div>
+          <div class="mc-val">
+            База даних або зовнішній API<br>
+            Збереження стану
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">Security</div>
+          <div class="mc-val">
+            Валідація даних<br>
+            Авторизація (якщо доречно)
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">Code Quality</div>
+          <div class="mc-val">
+            Обробка помилок<br>
+            SOLID / clean code
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">Testing</div>
+          <div class="mc-val">
+            Таблиця тест-кейсів<br>
+            Unit tests — бажано
+          </div>
+        </div>
+
+        <div class="mini-card">
+          <div class="mc-label">Git</div>
+          <div class="mc-val">
+            Осмислені коміти<br>
+            README + інструкція запуску
+          </div>
+        </div>
+
+      </div>
+
+      <div class="highlight" style="margin-top:1rem;">
+        <p>❌ CRUD без бізнес-логіки або tutorial-проєкт —
+          <b>не відповідає рівню 6 семестру.</b>
+        </p>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE — TESTING STANDARD ══ -->
+    <div class="slide" id="s_testing_std">
+      <div class="slide-no">13 · 13</div>
+      <div class="section-tag">Quality Assurance Standard</div>
+      <h2 class="slide-title">Тестування</h2>
+
+      <div class="two-col full-w">
+
+        <div class="card">
+          <h3>🔬 У записці повинно бути</h3>
+          <ul>
+            <li>Стратегія тестування</li>
+            <li>Таблиця тест-кейсів</li>
+            <li>Результати тестування</li>
+            <li>Опис виявлених дефектів</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>🧪 Бажаний рівень</h3>
+          <ul>
+            <li>Unit tests</li>
+            <li>Перевірка граничних значень</li>
+            <li>Негативні сценарії</li>
+            <li>Аналіз продуктивності</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="highlight" style="margin-top:1rem;">
+        <p><b>На захисті студент повинен пояснити:</b><br>
+          що тестувалося · чому саме так · які проблеми були знайдені ·
+          як вони були виправлені.</p>
+      </div>
+    </div>
+
+
+    <!-- ══ SLIDE 5 — ПОЯСНЮВАЛЬНА ЗАПИСКА ══ -->
+    <div class="slide" id="s5">
+      <div class="slide-no">05 · 13</div>
+      <div class="section-tag">Результат 02 — Пояснювальна записка</div>
+      <h2 class="slide-title">Структура записки (30–40 стор.)</h2>
+      <div class="steps full-w" style="max-width:860px">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h4>Вступ</h4>
+            <p>Актуальність, мета, 3–5 завдань, об'єкт і предмет дослідження, методи.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h4>Аналітичний розділ</h4>
+            <p>Предметна область, аналіз аналогів та існуючих рішень, обґрунтування підходу.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h4>Проєктний розділ</h4>
+            <p>Функціональні та нефункціональні вимоги, архітектура, UML, вибір алгоритмів і стеку.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h4>Технологічний розділ — Розробка</h4>
+            <p>Фрагменти коду, структура файлів, інтерфейс, особливості реалізації, зовнішні API.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <div class="step-body">
+            <h4>Тестування · Висновки · Джерела (≥ 20) · Додатки</h4>
+            <p>Результати тестів, аналіз ефективності; стислі висновки; список джерел (є поточний рік); додатки (код,
+              скріншоти, інструкції).</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 6 — СТРУКТУРА ПРЕЗЕНТАЦІЇ ══ -->
+    <!-- <div class="slide" id="s6">
+      <div class="slide-no">06 · 09</div>
+      <div class="section-tag">Результат 03 — Структура презентації</div>
+      <h2 class="slide-title">~10 слайдів до захисту</h2>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="phase">Слайд 1</div>
+          <h4>Титульний слайд</h4>
+          <p>Тема, ПІБ, група, науковий керівник, рік.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайд 2</div>
+          <h4>Мета, об'єкт, предмет</h4>
+          <p>Чітке формулювання. Актуальність — усно перед слайдом.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайд 3</div>
+          <h4>Завдання роботи</h4>
+          <p>Список задач (відповідає записці!).</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайди 4–5</div>
+          <h4>Аналіз аналогів</h4>
+          <p>Логотипи / скріншоти + таблиця переваг і недоліків.</p>
+          <span class="t-badge b-p">1–2 слайди</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайд 5–6</div>
+          <h4>Вимоги та засоби</h4>
+          <p>Функціональні/нефункціональні вимоги; логотипи технологій.</p>
+          <span class="t-badge b-p">Технічно</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайди 7–8</div>
+          <h4>Архітектура + Демо</h4>
+          <p>Діаграми, схеми; відео ≤ 2 хв або посилання + QR.</p>
+          <span class="t-badge b-g">Ключове</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайд 9</div>
+          <h4>Висновки та результати</h4>
+          <p>Стислий підсумок: що зроблено, чи досягнуто мету.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+        <div class="t-item">
+          <div class="phase">Слайд 10</div>
+          <h4>Дякую за увагу!</h4>
+          <p>Фінальний слайд.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+        <div class="t-item" style="border-color:#fca5a5;">
+          <div class="phase" style="color:#dc2626;">⚠️ Заборонено</div>
+          <h4>Очевидні підписи</h4>
+          <p>«Мова програмування для написання коду» — НЕ писати і НЕ говорити!</p>
+          <span class="t-badge b-r">Увага!</span>
+        </div>
+      </div>
+    </div> -->
+
+    <!-- ══ SLIDE 6 — STRUCTURE OF DEFENSE (ENGINEERING STYLE) ══ -->
+    <div class="slide" id="s6">
+      <div class="slide-no">06 · 13</div>
+      <div class="section-tag">Результат 03 — Структура презентації</div>
+      <h2 class="slide-title">Структура презентації до захисту (10-12 слайдів)</h2>
+
+      <div class="timeline">
+
+        <div class="t-item">
+          <div class="phase">Слайд 1</div>
+          <h4>Титульний слайд</h4>
+          <p>Тема, ПІБ, група, науковий керівник, рік.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 2</div>
+          <h4>Мета, об'єкт, предмет</h4>
+          <p>Чітке формулювання. Актуальність — усно перед слайдом.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 3</div>
+          <h4>Завдання роботи</h4>
+          <p>3–5 конкретних задач, що випливають з мети.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 4</div>
+          <h4>Problem & аналіз аналогів</h4>
+          <p>Для кого і яку проблему вирішує система.<br>
+            2–3 аналоги + їх обмеження.</p>
+          <span class="t-badge b-p">Аналітика</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 5</div>
+          <h4>Requirements</h4>
+          <p>5–7 ключових функціональних вимог.<br>
+            2–3 нефункціональні.</p>
+          <span class="t-badge b-p">Core</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 6</div>
+          <h4>Architecture</h4>
+          <p>Діаграма компонентів або класів.<br>
+            Пояснення логіки взаємодії модулів.</p>
+          <span class="t-badge b-g">Ключове</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 7</div>
+          <h4>Technology Stack & Design Decisions</h4>
+          <p>Мова, фреймворки, БД.<br>
+            Чому саме цей вибір?</p>
+          <span class="t-badge b-p">Engineering</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 8</div>
+          <h4>Implementation Highlights</h4>
+          <p>Структура проєкту.<br>
+            Ключові технічні рішення.</p>
+          <span class="t-badge b-p">Практика</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 9</div>
+          <h4>Testing & Results</h4>
+          <p>Стратегія тестування.<br>
+            Приклад тест-кейсу.<br>
+            Знайдені дефекти.</p>
+          <span class="t-badge b-g">Quality</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 10</div>
+          <h4>Demo & Conclusions</h4>
+          <p>Демонстрація роботи.<br> відео ≤ 2 хв або посилання + QR.</p>
+          <span class="t-badge b-t">Ключове</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 11</div>
+          <h4>Висновки та результати</h4>
+          <p>Стислий підсумок: що зроблено, чи досягнуто мету.</p>
+          <span class="t-badge b-t">Обов'язково</span>
+        </div>
+
+        <div class="t-item">
+          <div class="phase">Слайд 12</div>
+          <h4>Дякую за увагу!</h4>
+          <p>Фінальний слайд.</p>
+          <span class="t-badge b-t">Фінал</span>
+        </div>
+
+      </div>
+
+      <div class="highlight" style="margin-top:1rem;">
+        <p><b>Презентація повинна показувати інженерну логіку:</b><br>
+          Problem → Requirements → Architecture → Implementation → Testing → Results.<br>
+          ≤ 10 слайдів · ≤ 7 маркерів на слайд · без перевантаження текстом.</p>
+      </div>
+    </div>
+
+
+    <!-- ══ SLIDE 7 — ПЛАНУВАННЯ ══ -->
+    <div class="slide" id="s7">
+      <div class="slide-no">07 · 13</div>
+      <div class="section-tag">Планування та організація роботи</div>
+      <h2 class="slide-title">9 етапів виконання курсової</h2>
+      <div class="two-col full-w">
+        <div class="steps" style="gap:.48rem">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h4>Вибір теми та погодження з керівником</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h4>Формулювання мети, завдань, об'єкта та предмета</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h4>Збір та аналіз інформації з предметної галузі</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h4>Розробка технічного завдання</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h4>Проєктування архітектури програмного продукту</h4>
+            </div>
+          </div>
+        </div>
+        <div class="steps" style="gap:.48rem">
+          <div class="step">
+            <div class="step-num">6</div>
+            <div class="step-body">
+              <h4>Реалізація програмного забезпечення</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">7</div>
+            <div class="step-body">
+              <h4>Тестування та налагодження</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">8</div>
+            <div class="step-body">
+              <h4>Оформлення пояснювальної записки (A4, TNR 14pt)</h4>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">9</div>
+            <div class="step-body">
+              <h4>Підготовка презентації та доповіді до захисту</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="highlight" style="margin-top:1rem;margin-bottom:0;max-width:860px">
+        <p>💡 Починайте якомога раніше · Регулярно консультуйтесь з керівником · Зберігайте резервні копії на <b>Git</b>
+          · Не відкладайте реалізацію на останній тиждень</p>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 8 — ОЦІНЮВАННЯ ══ -->
+    <div class="slide" id="s8">
+      <div class="slide-no">08 · 13</div>
+      <div class="section-tag">Критерії оцінювання та вимоги до оформлення</div>
+      <h2 class="slide-title">Що перевіряється на захисті?</h2>
+      <div class="grade-row">
+        <div class="grade-card">
+          <h3>💻 Програмний проєкт</h3>
+          <ul>
+            <li>Функціональність та коректна робота</li>
+            <li>Якість архітектури та читабельність коду</li>
+            <li>Наявність тестів і Git-репозиторію</li>
+            <li>Безпека та обробка помилок</li>
+            <li>Демонстрація (відео або live)</li>
+          </ul>
+        </div>
+        <div class="grade-card gc2">
+          <h3>📄 Пояснювальна записка</h3>
+          <ul>
+            <li>Повнота та логічність структури</li>
+            <li>Глибина аналізу предметної галузі</li>
+            <li>Коректність UML-діаграм і схем</li>
+            <li>Список ≥ 20 джерел (є поточний рік)</li>
+            <li>Оформлення: A4, Times New Roman 14pt</li>
+          </ul>
+        </div>
+        <div class="grade-card gc3">
+          <h3>🎞 Презентація та захист</h3>
+          <ul>
+            <li>Структурованість і наочність слайдів</li>
+            <li>Чіткість і лаконічність доповіді</li>
+            <li>Відповіді на запитання комісії</li>
+            <li>Відповідність слайдів і записки</li>
+            <li>Власна позиція щодо вибору рішень</li>
+          </ul>
+        </div>
+      </div>
+      <div class="highlight" style="margin-top:1rem;margin-bottom:0;max-width:860px">
+        <p>Тему обирають самостійно з переліку кафедри або пропонують власну — <b>за погодженням з науковим
+            керівником</b>. Обсяг записки: <b>30–40 стор.</b> (додатки не рахуються).</p>
+      </div>
+    </div>
+
+    <!-- ══ SLIDE 9 — FINAL ══ -->
+    <div class="slide" id="s_last">
+      <div class="slide-no" style="color:rgba(255,255,255,.15);">09 · 09</div>
+      <img class="final-logo" src="https://kubg.edu.ua/images/stories/Departaments/ndl.co/logo/logo_04.png"
+        alt="КСУ Грінченка" onerror="this.style.display='none'">
+      <div class="final-big">Успіхів<br>у написанні <span>курсової!</span></div>
+      <p class="final-sub">
+        Головна задача — показати <strong style="color:var(--teal)">що</strong> розробляється,
+        <strong style="color:#fff">для чого</strong>, що використовується
+        і як це <strong style="color:var(--teal)">працює</strong>.
+      </p>
+      <div class="final-chips">
+        <div class="f-chip"><b>💻</b> Проєкт на Git</div>
+        <div class="f-chip"><b>📑</b> Записка 30–40 стор.</div>
+        <div class="f-chip"><b>🎞</b> Презентація ~10 слайдів</div>
+        <div class="f-chip"><b>🎓</b> Захист · 6 семестр</div>
+      </div>
+    </div>
+
+  </div><!-- /deck -->
+
+  <nav>
+    <button onclick="go(-1)">&#9664;</button>
+    <div class="dots" id="dotsEl"></div>
+    <span id="progress">01 / 13</span>
+    <button onclick="go(1)">&#9654;</button>
+  </nav>
+  <div class="key-label">← → Space · Click</div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const dotsEl = document.getElementById('dotsEl');
+    const progress = document.getElementById('progress');
+    let cur = 0;
+    slides.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    });
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function goTo(n) {
+      if (n < 0 || n >= slides.length) return;
+      slides[cur].classList.add('out');
+      slides[cur].classList.remove('active');
+      setTimeout(() => slides.forEach(s => s.classList.remove('out')), 500);
+      cur = n;
+      slides[cur].classList.add('active');
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+      progress.textContent = pad(cur + 1) + ' / ' + pad(slides.length);
+    }
+    function go(dir) { goTo(cur + dir); }
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); go(-1); }
+    });
+    document.getElementById('deck').addEventListener('click', e => {
+      if (e.target.closest('nav')) return;
+      go(e.clientX > window.innerWidth / 2 ? 1 : -1);
+    });
+  </script>
+</body>
+
+</html>
